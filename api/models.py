@@ -19,3 +19,18 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
     text = models.TextField()
     created = models.DateTimeField("Дата добавления", auto_now_add=True, db_index=True)
+
+class Follow(models.Model):
+    # ссылка на объект пользователя, который подписывается
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="follower"
+    )
+    # ссылка на объект пользователя, на которого подписываются
+    following = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="following"
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['following', 'user'], name='uni_foll')
+        ]

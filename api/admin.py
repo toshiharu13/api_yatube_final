@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Post
+from .models import Post, Comment, Follow, User
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('pk', 'text', 'pub_date', 'author')
@@ -9,3 +9,7 @@ class PostAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 admin.site.register(Post, PostAdmin)
+admin.site.register(Comment)
+admin.site.register(Follow)
+#admin.site.register(User)
+

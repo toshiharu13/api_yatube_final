@@ -1,7 +1,7 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
-from .serializers import CommentSerializer, PostSerializer
-from .models import Post, Comment
+from .serializers import CommentSerializer, PostSerializer, FollowSerializer
+from .models import Post, Comment, Follow, User
 from rest_framework.permissions import (IsAuthenticated)
 from .permissions import IsOwnerOrReadOnly
 from django.shortcuts import get_object_or_404
@@ -33,3 +33,27 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         post = get_object_or_404(Post, id=self.kwargs.get('post_id'))
         return post.comments.all()
+
+class FollowViewSet(viewsets.ModelViewSet):
+    serializer_class = FollowSerializer
+    http_method_names = ('get', 'post')
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    #search_fields = ['user__username', ]
+    #queryset = Follow.getobject.all()
+
+    def get_queryset(self):
+        return Follow.objects.filter(following=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+
+        Follow.objects.get_or_create(
+            following=get_object_or_404(User, username=kwargs.get('following')),
+            user=self.request.user,
+        )
+        queryset = Follow.objects.filter(following=kwargs.get('following'), user=request.user)
+        serializer = CommentSerializer(data=queryset)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+

@@ -4,11 +4,12 @@ from rest_framework_simplejwt.views import (
 )
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PostViewSet, CommentViewSet
+from .views import PostViewSet, CommentViewSet, FollowViewSet
 
 router = DefaultRouter()
 router.register('posts', PostViewSet)
 router.register(r'posts/(?P<post_id>\d+)/comments', CommentViewSet)
+router.register('follow', FollowViewSet, basename='follow')
 
 urlpatterns = [
     path('v1/', include(router.urls)),
