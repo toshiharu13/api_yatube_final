@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
-from .serializers import CommentSerializer, PostSerializer, FollowSerializer
-from .models import Post, Comment, Follow, User
+from .serializers import CommentSerializer, PostSerializer, FollowSerializer, GroupSerializer
+from .models import Post, Comment, Follow, User, Group
 from rest_framework.permissions import (IsAuthenticated)
 from .permissions import IsOwnerOrReadOnly
 from django.shortcuts import get_object_or_404
@@ -57,3 +57,8 @@ class FollowViewSet(viewsets.ModelViewSet):
         #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class GroupViewSet(viewsets.ModelViewSet):
+    serializer_class = GroupSerializer
+    queryset = Group.objects.all()
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    http_method_names = ('get', 'post')
