@@ -39,22 +39,12 @@ class FollowViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', 'post')
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [filters.SearchFilter]
-    #search_fields = ['user__username', ]
+    search_fields = ['user__username', ]
     #queryset = Follow.getobject.all()
 
     def get_queryset(self):
         return Follow.objects.filter(following=self.request.user)
 
-    def create(self, request, *args, **kwargs):
-
-        Follow.objects.get_or_create(
-            following=get_object_or_404(User, username=kwargs.get('following')),
-            user=self.request.user,
-        )
-        queryset = Follow.objects.filter(following=kwargs.get('following'), user=request.user)
-        serializer = CommentSerializer(data=queryset)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GroupViewSet(viewsets.ModelViewSet):
