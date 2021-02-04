@@ -40,8 +40,8 @@ class Group(models.Model):
         max_length=200, help_text='Дайте короткое название группе',
         verbose_name="группа/сообщество"
     )
-    slug = models.SlugField(unique=True, max_length=20)
-    description = models.TextField()
+    #slug = models.SlugField(unique=True, max_length=20)
+    #description = models.TextField()
 
     def __str__(self):
         return self.title
