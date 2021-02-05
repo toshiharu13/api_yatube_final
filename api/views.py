@@ -2,7 +2,7 @@ from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
 from .serializers import CommentSerializer, PostSerializer, FollowSerializer, GroupSerializer
 from .models import Post, Comment, Follow, User, Group
-from rest_framework.permissions import (IsAuthenticated)
+from rest_framework.permissions import (IsAuthenticated, IsAuthenticatedOrReadOnly)
 from .permissions import IsOwnerOrReadOnly
 from django.shortcuts import get_object_or_404
 
@@ -37,13 +37,16 @@ class CommentViewSet(viewsets.ModelViewSet):
 class FollowViewSet(viewsets.ModelViewSet):
     serializer_class = FollowSerializer
     http_method_names = ('get', 'post')
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['user__username', ]
-    #queryset = Follow.getobject.all()
+    #queryset = Follow.objects.all()
 
     def get_queryset(self):
         return Follow.objects.filter(following=self.request.user)
+
+    '''def perform_create(self, serializer):
+        serializer.save(user=self.request.user)'''
 
 
 
