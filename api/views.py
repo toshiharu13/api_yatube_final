@@ -1,12 +1,14 @@
-from rest_framework import viewsets, status, filters
-from rest_framework.response import Response
-from .serializers import CommentSerializer, PostSerializer, FollowSerializer, GroupSerializer
-from .models import Post, Comment, Follow, User, Group
-from rest_framework.permissions import (IsAuthenticated, IsAuthenticatedOrReadOnly)
-from .permissions import IsOwnerOrReadOnly
-from django.shortcuts import get_object_or_404
 import django_filters.rest_framework
+from django.shortcuts import get_object_or_404
+from rest_framework import filters, status, viewsets
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
+from rest_framework.response import Response
 
+from .models import Comment, Follow, Group, Post
+from .permissions import IsOwnerOrReadOnly
+from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
+                          PostSerializer)
 
 
 class PostViewSet(viewsets.ModelViewSet):
