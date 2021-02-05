@@ -22,6 +22,7 @@ class Post(models.Model):
                               blank=True, null=True,
                               related_name="posts", verbose_name='Группа',
                               help_text='Выбор сообщества')
+
     def __str__(self):
         return self.text
 
@@ -37,6 +38,7 @@ class Comment(models.Model):
     created = models.DateTimeField(
         "Дата добавления", auto_now_add=True, db_index=True
     )
+
 
 class Follow(models.Model):
     # ссылка на объект пользователя, который подписывается
@@ -54,4 +56,3 @@ class Follow(models.Model):
                 fields=['following', 'user'], name='uni_foll'
             )
         ]
-
