@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Post, Comment, Follow, Group, User
+from rest_framework.validators import UniqueTogetherValidator
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -30,9 +31,23 @@ class FollowSerializer(serializers.ModelSerializer):
         slug_field='username',
         queryset=User.objects.all()
     )
+
+    def validate(self, attrs):
+        if attrs['user'] == attrs['following']:
+            raise serializers.ValidationError('user and following not to be equal')
+        return attrs
+
     class Meta:
         fields = '__all__'
         model = Follow
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Follow.objects.all(),
+                fields=['user', 'following'],
+                message='Вы не можете сами на себя подписаться!',
+            )
+        ]
+
 
 class GroupSerializer(serializers.ModelSerializer):
     #title = serializers.ReadOnlyField(source='title')
