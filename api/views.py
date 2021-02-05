@@ -13,6 +13,7 @@ from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
+    queryset = Post.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_fields = ['group',]
