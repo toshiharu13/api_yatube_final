@@ -1,9 +1,8 @@
 import django_filters.rest_framework
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, status, viewsets
+from rest_framework import filters, viewsets, mixins
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
-from rest_framework.response import Response
 
 from .models import Comment, Follow, Group, Post
 from .permissions import IsOwnerOrReadOnly
@@ -27,22 +26,19 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
-    def create(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, id=self.kwargs.get('post_id'))
-        serializer = CommentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(author=self.request.user, post=post)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     def get_queryset(self):
         post = get_object_or_404(Post, id=self.kwargs.get('post_id'))
         return post.comments.all()
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(mixins.CreateModelMixin,
+                   mixins.ListModelMixin,
+                   viewsets.GenericViewSet
+                   ):
     serializer_class = FollowSerializer
-    http_method_names = ('get', 'post')
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['user__username', ]
@@ -51,8 +47,10 @@ class FollowViewSet(viewsets.ModelViewSet):
         return Follow.objects.filter(following=self.request.user)
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(mixins.CreateModelMixin,
+                   mixins.ListModelMixin,
+                   viewsets.GenericViewSet
+                   ):
     serializer_class = GroupSerializer
     queryset = Group.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    http_method_names = ('get', 'post')
