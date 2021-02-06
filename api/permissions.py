@@ -12,4 +12,3 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS or obj.author == request.user:
             return True
-

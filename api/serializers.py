@@ -9,6 +9,7 @@ class PostSerializer(serializers.ModelSerializer):
         slug_field='username',
         read_only=True,
     )
+
     class Meta:
         fields = '__all__'
         model = Post
