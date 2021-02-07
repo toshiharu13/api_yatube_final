@@ -9,6 +9,12 @@ from .permissions import IsOwnerOrReadOnly
 from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
                           PostSerializer)
 
+class MixClass(mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    viewsets.GenericViewSet,
+               ):
+    pass
+
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
@@ -34,10 +40,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         return post.comments.all()
 
 
-class FollowViewSet(mixins.CreateModelMixin,
-                    mixins.ListModelMixin,
-                    viewsets.GenericViewSet,
-                    ):
+class FollowViewSet(MixClass):
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [filters.SearchFilter]
@@ -47,10 +50,7 @@ class FollowViewSet(mixins.CreateModelMixin,
         return Follow.objects.filter(following=self.request.user)
 
 
-class GroupViewSet(mixins.CreateModelMixin,
-                   mixins.ListModelMixin,
-                   viewsets.GenericViewSet
-                   ):
+class GroupViewSet(MixClass):
     serializer_class = GroupSerializer
     queryset = Group.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
