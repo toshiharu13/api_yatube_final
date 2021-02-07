@@ -9,9 +9,10 @@ from .permissions import IsOwnerOrReadOnly
 from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
                           PostSerializer)
 
+
 class MixClass(mixins.CreateModelMixin,
-                    mixins.ListModelMixin,
-                    viewsets.GenericViewSet,
+               mixins.ListModelMixin,
+               viewsets.GenericViewSet,
                ):
     pass
 
