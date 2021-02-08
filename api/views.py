@@ -8,13 +8,7 @@ from .models import Comment, Follow, Group, Post
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
                           PostSerializer)
-
-
-class MixClass(mixins.CreateModelMixin,
-               mixins.ListModelMixin,
-               viewsets.GenericViewSet,
-               ):
-    pass
+from .mixins import GetPostMixClasses
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -41,7 +35,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         return post.comments.all()
 
 
-class FollowViewSet(MixClass):
+class FollowViewSet(GetPostMixClasses):
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [filters.SearchFilter]
@@ -51,7 +45,7 @@ class FollowViewSet(MixClass):
         return Follow.objects.filter(following=self.request.user)
 
 
-class GroupViewSet(MixClass):
+class GroupViewSet(GetPostMixClasses):
     serializer_class = GroupSerializer
     queryset = Group.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
